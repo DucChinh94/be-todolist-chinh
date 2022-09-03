@@ -26,7 +26,7 @@ public class SwaggerConfiguration extends WebMvcConfigurationSupport {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
 //      .apis(RequestHandlerSelectors.any())
-                .apis(RequestHandlerSelectors.basePackage("com.itsol.recruit"))
+                .apis(RequestHandlerSelectors.basePackage("com.example.todolist"))
                 .paths(PathSelectors.any())
                 .build();
     }

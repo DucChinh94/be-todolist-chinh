@@ -17,5 +17,5 @@ public interface TodoRepository extends JpaRepository<Todo, Integer> {
 @Query(value = "SELECT u FROM Todo u")
     List<Todo> findAll();
 
-    Todo findTodoByTaskName(String taskName);
+    Todo findTodoByTaskname(String taskName);
 }
