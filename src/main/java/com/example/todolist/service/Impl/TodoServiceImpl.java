@@ -1,13 +1,20 @@
 package com.example.todolist.service.Impl;
 
+import com.example.todolist.core.Constants;
+import com.example.todolist.dto.TodoRequest;
+import com.example.todolist.dto.respones.ResponseObject;
 import com.example.todolist.entity.Todo;
 import com.example.todolist.repository.TodoRepository;
 import com.example.todolist.service.TodoService;
+import lombok.var;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -15,30 +22,64 @@ public class TodoServiceImpl implements TodoService {
     @Autowired
     private TodoRepository todoRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
     public List<Todo> getAllTodo() {
-        return (List<Todo>) todoRepository.findAll();
+        return todoRepository.findAllAndFlag(Constants.FALSE_DELETE);
     }
-//
-////    @Override
-////    public TodoEntity getById(long id) {
-////        return (TodoEntity) todoRepository.getAllTodo(id);
-////    }
-//
-//    @Override
-//    public void saveTodo(TodoEntity todoEntity) {
-//        todoRepository.save(todoEntity);
-//    }
-//
-//    @Override
-//    public void deleteTodo(Long id) {
-//        todoRepository.deleteById(id);
-//    }
-//
-//
-//    @Override
-//    public Optional<TodoEntity> findTodoById(Long id) {
-//        return todoRepository.findById(id);
-//    }
 
+    @Override
+    public Todo getTodoById(Long id) {
+        return todoRepository.findByIdAndFlag(id, Constants.FALSE_DELETE)
+                .orElseThrow(() -> new IllegalStateException(Constants.RECORD_NOT_FOUND));
+    }
+
+    @Override
+    public ResponseObject createAndUpdateTodo(TodoRequest todoRequest) {
+        Todo todo = modelMapper.map(todoRequest, Todo.class);
+        Optional<Todo> updateTodo = todoRepository.findById(todoRequest.getId());
+        if (updateTodo.isPresent()) {
+            todoRepository.save(todo);
+            todo.setId(todoRequest.getId());
+            return new ResponseObject(HttpStatus.OK, Constants.UPDATE_SUCCESS, updateTodo.get());
+        }else {
+            var todoUpdated = todoRepository.save(todo);
+            return new ResponseObject(HttpStatus.OK, Constants.CREATE_SUCCESS, todoUpdated);
+        }
+    }
+
+    @Override
+    public ResponseObject deleteTodo(long id) {
+        Optional<Todo> todoDelete = todoRepository.findById(id);
+        if (todoDelete.isPresent()) {
+            Todo todo =  new Todo();
+            todo.setId(todoDelete.get().getId());
+            todo.setDescription(todoDelete.get().getDescription());
+            todo.setTaskname(todoDelete.get().getTaskname());
+            todo.setFlag(true);
+            todoRepository.save(todo);
+            return new ResponseObject(HttpStatus.OK, Constants.DELETE_SUCCESS, "");
+        }else {
+            throw new IllegalStateException(Constants.RECORD_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public List<Todo> getDeleteTodoList() {
+        return todoRepository.findAllAndFlag(Constants.TRUE_DELETE);
+    }
+
+    @Override
+    public List<Todo> findTodoByTaskname(String taskname) {
+        List<Todo> todos = todoRepository.findTodoByTaskname(taskname, Constants.FALSE_DELETE );
+        return  todos;
+    }
+
+    @Override
+    public List<Todo> findDeletedByTaskname(String taskname) {
+        List<Todo> todos = todoRepository.findTodoByTaskname(taskname, Constants.TRUE_DELETE );
+        return  todos;
+    }
 }

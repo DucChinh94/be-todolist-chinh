@@ -1,73 +1,37 @@
 package com.example.todolist.entity;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.math.BigInteger;
-import java.util.Objects;
+import java.io.Serializable;
 
 @Entity
 @Table (name = "todo")
 @NoArgsConstructor
 @Data
-public class Todo {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Todo implements Serializable {
     @Id
-    @Column(name = "ID")
-    private short id;
+    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TODOSEQUENCE")
+    @SequenceGenerator(name = "TODOSEQUENCE", sequenceName = "TODOSEQUENCE", allocationSize = 1, initialValue = 1)
+    Long id;
+
     @Basic
     @Column(name = "TASKNAME")
-    private String taskname;
+    String taskname;
+
     @Basic
     @Column(name = "DESCRIPTION")
-    private String description;
+    String description;
+
     @Basic
     @Column(name = "FLAG")
-    private BigInteger flag;
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    Boolean flag;
 
-//    public short getId() {
-//        return id;
-//    }
-//
-//    public void setId(short id) {
-//        this.id = id;
-//    }
-//
-//    public String getTaskname() {
-//        return taskname;
-//    }
-//
-//    public void setTaskname(String taskname) {
-//        this.taskname = taskname;
-//    }
-//
-//    public String getDescription() {
-//        return description;
-//    }
-//
-//    public void setDescription(String description) {
-//        this.description = description;
-//    }
-//
-//    public BigInteger getFlag() {
-//        return flag;
-//    }
-//
-//    public void setFlag(BigInteger flag) {
-//        this.flag = flag;
-//    }
-//
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        Todo todo = (Todo) o;
-//        return id == todo.id && Objects.equals(taskname, todo.taskname) && Objects.equals(description, todo.description) && Objects.equals(flag, todo.flag);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(id, taskname, description, flag);
-//    }
 }

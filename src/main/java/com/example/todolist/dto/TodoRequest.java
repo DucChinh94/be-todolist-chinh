@@ -1,4 +1,4 @@
-package com.example.todolist.entity;
+package com.example.todolist.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TodoRequest {
     @NonNull
-    Short id;
+    Long id;
 
     @NonNull
     String taskName;
@@ -17,5 +17,5 @@ public class TodoRequest {
     String description;
 
     @NonNull
-    Long flag;
+    Boolean flag;
 }
