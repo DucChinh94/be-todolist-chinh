@@ -12,12 +12,12 @@ import java.util.Optional;
 @Repository
 public interface TodoRepository extends JpaRepository<Todo, Long>, JpaSpecificationExecutor<Todo> {
 
-    Optional<Todo> findByIdAndFlag(Long id, Boolean flag);
+    Optional<Todo> findByIdAndDeleteFlag(Long id, Boolean deleteFlag);
 
-    @Query("SELECT t FROM Todo t WHERE t.taskname LIKE %?1% AND t.flag = ?2" )
-    public List<Todo> findTodoByTaskname(String name , Boolean flag);
+    @Query("SELECT t FROM Todo t WHERE t.taskName LIKE %?1% AND t.deleteFlag = ?2" )
+    public List<Todo> findTodoByTaskName(String name , Boolean deleteFlag);
 
-    @Query("SELECT t FROM Todo t WHERE t.flag = ?1")
-    public List<Todo> findAllAndFlag(Boolean flag);
+    @Query("SELECT t FROM Todo t WHERE t.deleteFlag = ?1")
+    public List<Todo> findAllAndFlag(Boolean deleteFlag);
 
 }

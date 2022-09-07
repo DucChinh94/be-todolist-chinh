@@ -17,13 +17,13 @@ import java.io.Serializable;
 public class Todo implements Serializable {
     @Id
     @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TODOSEQUENCE")
-    @SequenceGenerator(name = "TODOSEQUENCE", sequenceName = "TODOSEQUENCE", allocationSize = 1, initialValue = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sqe")
+    @SequenceGenerator(name = "sqe", sequenceName = "todo_sqe", allocationSize = 1, initialValue = 1)
     Long id;
 
     @Basic
     @Column(name = "TASKNAME")
-    String taskname;
+    String taskName;
 
     @Basic
     @Column(name = "DESCRIPTION")
@@ -32,6 +32,6 @@ public class Todo implements Serializable {
     @Basic
     @Column(name = "FLAG")
     @Type(type = "org.hibernate.type.NumericBooleanType")
-    Boolean flag;
+    Boolean deleteFlag;
 
 }

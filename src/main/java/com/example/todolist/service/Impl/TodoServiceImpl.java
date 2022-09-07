@@ -32,7 +32,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public Todo getTodoById(Long id) {
-        return todoRepository.findByIdAndFlag(id, Constants.FALSE_DELETE)
+        return todoRepository.findByIdAndDeleteFlag(id, Constants.FALSE_DELETE)
                 .orElseThrow(() -> new IllegalStateException(Constants.RECORD_NOT_FOUND));
     }
 
@@ -41,9 +41,15 @@ public class TodoServiceImpl implements TodoService {
         Todo todo = modelMapper.map(todoRequest, Todo.class);
         Optional<Todo> updateTodo = todoRepository.findById(todoRequest.getId());
         if (updateTodo.isPresent()) {
-            todoRepository.save(todo);
-            todo.setId(todoRequest.getId());
-            return new ResponseObject(HttpStatus.OK, Constants.UPDATE_SUCCESS, updateTodo.get());
+//            todoRepository.save(todo);
+//            todo.setId(todoRequest.getId());
+//            return new ResponseObject(HttpStatus.OK, Constants.UPDATE_SUCCESS, updateTodo.get());
+
+            updateTodo.get().setTaskName(todo.getTaskName());
+            updateTodo.get().setDescription(todo.getDescription());
+            updateTodo.get().setDeleteFlag(todo.getDeleteFlag());
+            todoRepository.save(updateTodo.get());
+            return new ResponseObject(HttpStatus.OK, Constants.UPDATE_SUCCESS, todoRequest);
         }else {
             var todoUpdated = todoRepository.save(todo);
             return new ResponseObject(HttpStatus.OK, Constants.CREATE_SUCCESS, todoUpdated);
@@ -57,8 +63,8 @@ public class TodoServiceImpl implements TodoService {
             Todo todo =  new Todo();
             todo.setId(todoDelete.get().getId());
             todo.setDescription(todoDelete.get().getDescription());
-            todo.setTaskname(todoDelete.get().getTaskname());
-            todo.setFlag(true);
+            todo.setTaskName(todoDelete.get().getTaskName());
+            todo.setDeleteFlag(true);
             todoRepository.save(todo);
             return new ResponseObject(HttpStatus.OK, Constants.DELETE_SUCCESS, "");
         }else {
@@ -72,14 +78,14 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public List<Todo> findTodoByTaskname(String taskname) {
-        List<Todo> todos = todoRepository.findTodoByTaskname(taskname, Constants.FALSE_DELETE );
+    public List<Todo> findTodoByTaskName(String taskname) {
+        List<Todo> todos = todoRepository.findTodoByTaskName(taskname, Constants.FALSE_DELETE );
         return  todos;
     }
 
     @Override
-    public List<Todo> findDeletedByTaskname(String taskname) {
-        List<Todo> todos = todoRepository.findTodoByTaskname(taskname, Constants.TRUE_DELETE );
+    public List<Todo> findDeletedByTaskName(String taskname) {
+        List<Todo> todos = todoRepository.findTodoByTaskName(taskname, Constants.TRUE_DELETE );
         return  todos;
     }
 }

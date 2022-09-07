@@ -15,6 +15,7 @@ import org.modelmapper.TypeToken;
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping(value = Constants.Api.Path.PUBLIC)
 public class TodoController {
@@ -54,13 +55,13 @@ public class TodoController {
 
     @GetMapping ("/search")
     public  ResponseEntity<ResponseObject>  getByTaskName(@RequestParam String name){
-        List<Todo> todos = todoService.findTodoByTaskname(name);
+        List<Todo> todos = todoService.findTodoByTaskName(name);
         return ResponseEntity.ok(new ResponseObject(HttpStatus.OK, Constants.SUCCESS,todos));
     }
 
     @GetMapping ("/searchDeleted")
     public  ResponseEntity<ResponseObject>  getDeletedByName(@RequestParam String name){
-        List<Todo> todos = todoService.findDeletedByTaskname(name);
+        List<Todo> todos = todoService.findDeletedByTaskName(name);
         return ResponseEntity.ok(new ResponseObject(HttpStatus.OK, Constants.SUCCESS,todos));
     }
 

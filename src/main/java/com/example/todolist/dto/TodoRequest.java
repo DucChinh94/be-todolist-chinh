@@ -17,5 +17,5 @@ public class TodoRequest {
     String description;
 
     @NonNull
-    Boolean flag;
+    Boolean deleteFlag;
 }
