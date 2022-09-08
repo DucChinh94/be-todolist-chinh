@@ -21,4 +21,8 @@ public interface TodoService {
     List<Todo> findTodoByTaskName(String taskname);
 
     List<Todo> findDeletedByTaskName(String taskname);
+
+    ResponseObject deleteAllTodo();
+
+    ResponseObject deleteALLTodoTrash();
 }

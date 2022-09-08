@@ -7,12 +7,15 @@ import com.example.todolist.entity.Todo;
 import com.example.todolist.repository.TodoRepository;
 import com.example.todolist.service.TodoService;
 import lombok.var;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,13 +76,36 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
+    public ResponseObject deleteAllTodo() {
+        List<Todo>todoList = this.getAllTodo();
+        for (Todo todo: todoList) {
+            Todo todoDelete = new Todo();
+            todoDelete.setId(todo.getId());
+            todoDelete.setDescription(todo.getDescription());
+            todoDelete.setTaskName(todo.getTaskName());
+            todoDelete.setDeleteFlag(true);
+            todoRepository.save(todoDelete);
+        }
+        return new ResponseObject(HttpStatus.OK, Constants.DELETE_SUCCESS, "");
+    }
+
+    @Override
+    public ResponseObject deleteALLTodoTrash() {
+        List<Todo> todoList = this.getDeleteTodoList();
+        todoRepository.deleteAll(todoList);
+        return new ResponseObject(HttpStatus.OK, Constants.DELETE_SUCCESS, "");
+    }
+
+    @Override
     public List<Todo> getDeleteTodoList() {
         return todoRepository.findAllAndFlag(Constants.TRUE_DELETE);
     }
 
     @Override
     public List<Todo> findTodoByTaskName(String taskname) {
-        List<Todo> todos = todoRepository.findTodoByTaskName(taskname, Constants.FALSE_DELETE );
+        String nameStripAccented = StringUtils.stripAccents(taskname);
+        // TODO replace đ/ Đ
+        List<Todo> todos = todoRepository.findTodoByTaskName(nameStripAccented, Constants.FALSE_DELETE );
         return  todos;
     }
 

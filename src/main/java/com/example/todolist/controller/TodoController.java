@@ -4,6 +4,7 @@ import com.example.todolist.core.Constants;
 import com.example.todolist.dto.TodoRequest;
 import com.example.todolist.dto.respones.ResponseObject;
 import com.example.todolist.entity.Todo;
+import com.example.todolist.repository.TodoRepository;
 import com.example.todolist.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.modelmapper.TypeToken;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -53,6 +55,16 @@ public class TodoController {
         return  ResponseEntity.ok().body(todoService.deleteTodo(id));
     }
 
+    @DeleteMapping("/deleteAllTodo")
+    public ResponseEntity<ResponseObject> deleteAllTodo() {
+        return ResponseEntity.ok().body(todoService.deleteAllTodo());
+    }
+
+    @DeleteMapping("/deleteAllTodoTrash")
+    public ResponseEntity<ResponseObject> deleteALLTodoTrash() {
+        return  ResponseEntity.ok().body(todoService.deleteALLTodoTrash());
+    }
+
     @GetMapping ("/search")
     public  ResponseEntity<ResponseObject>  getByTaskName(@RequestParam String name){
         List<Todo> todos = todoService.findTodoByTaskName(name);
@@ -70,7 +82,4 @@ public class TodoController {
         List<Todo> deletedTodoList = todoService.getDeleteTodoList();
         return ResponseEntity.ok(new ResponseObject(HttpStatus.OK, Constants.SUCCESS,deletedTodoList));
     }
-
-
-
 }
