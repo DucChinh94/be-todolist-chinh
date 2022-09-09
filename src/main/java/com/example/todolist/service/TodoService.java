@@ -25,4 +25,10 @@ public interface TodoService {
     ResponseObject deleteAllTodo();
 
     ResponseObject deleteALLTodoTrash();
+
+    ResponseObject deleteTodoTrash(long id);
+
+    ResponseObject responseAllTodo();
+
+    ResponseObject responseTodo(long id);
 }

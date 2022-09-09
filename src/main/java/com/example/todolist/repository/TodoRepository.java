@@ -23,6 +23,4 @@ public interface TodoRepository extends JpaRepository<Todo, Long>, JpaSpecificat
     @Query("SELECT t FROM Todo t WHERE t.deleteFlag = ?1")
     public List<Todo> findAllAndFlag(Boolean deleteFlag);
 
-
-
 }

@@ -9,13 +9,11 @@ import com.example.todolist.service.TodoService;
 import lombok.var;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,10 +42,6 @@ public class TodoServiceImpl implements TodoService {
         Todo todo = modelMapper.map(todoRequest, Todo.class);
         Optional<Todo> updateTodo = todoRepository.findById(todoRequest.getId());
         if (updateTodo.isPresent()) {
-//            todoRepository.save(todo);
-//            todo.setId(todoRequest.getId());
-//            return new ResponseObject(HttpStatus.OK, Constants.UPDATE_SUCCESS, updateTodo.get());
-
             updateTodo.get().setTaskName(todo.getTaskName());
             updateTodo.get().setDescription(todo.getDescription());
             updateTodo.get().setDeleteFlag(todo.getDeleteFlag());
@@ -94,6 +88,47 @@ public class TodoServiceImpl implements TodoService {
         List<Todo> todoList = this.getDeleteTodoList();
         todoRepository.deleteAll(todoList);
         return new ResponseObject(HttpStatus.OK, Constants.DELETE_SUCCESS, "");
+    }
+
+    @Override
+    public ResponseObject deleteTodoTrash(long id) {
+        Optional<Todo> todoOptional = todoRepository.findById(id);
+        if (todoOptional.isPresent()){
+                todoRepository.deleteById(id);
+            return new ResponseObject(HttpStatus.OK, Constants.DELETE_SUCCESS, "");
+        } else {
+            throw new IllegalStateException(Constants.RECORD_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public ResponseObject responseAllTodo() {
+        List<Todo> todoList = this.getDeleteTodoList();
+        for (Todo todo: todoList) {
+            Todo todoResponse = new Todo();
+            todoResponse.setId(todo.getId());
+            todoResponse.setTaskName(todo.getTaskName());
+            todoResponse.setDescription(todo.getDescription());
+            todoResponse.setDeleteFlag(false);
+            todoRepository.save(todoResponse);
+        }
+        return new ResponseObject(HttpStatus.OK, Constants.DELETE_SUCCESS, "");
+    }
+
+    @Override
+    public ResponseObject responseTodo(long id) {
+        Optional<Todo> todoOptional = todoRepository.findById(id);
+        if (todoOptional.isPresent()) {
+            Todo todoResponse =  new Todo();
+            todoResponse.setId(todoOptional.get().getId());
+            todoResponse.setDescription(todoOptional.get().getDescription());
+            todoResponse.setTaskName(todoOptional.get().getTaskName());
+            todoResponse.setDeleteFlag(false);
+            todoRepository.save(todoResponse);
+            return new ResponseObject(HttpStatus.OK, Constants.DELETE_SUCCESS, "");
+        }else {
+            throw new IllegalStateException(Constants.RECORD_NOT_FOUND);
+        }
     }
 
     @Override

@@ -65,6 +65,21 @@ public class TodoController {
         return  ResponseEntity.ok().body(todoService.deleteALLTodoTrash());
     }
 
+    @DeleteMapping("/deleteTodoTrash/{id}")
+    public ResponseEntity<ResponseObject> deleteTodoTrash(@PathVariable long id) {
+        return ResponseEntity.ok().body(todoService.deleteTodoTrash(id));
+    }
+
+    @GetMapping("/responseAllTodo")
+    public ResponseEntity<ResponseObject> responseAllTodo() {
+        return ResponseEntity.ok().body(todoService.responseAllTodo());
+    }
+
+    @GetMapping("/responseTodo/{id}")
+    public ResponseEntity<ResponseObject> responseTodo(@PathVariable long id) {
+        return ResponseEntity.ok().body(todoService.responseTodo(id));
+    }
+
     @GetMapping ("/search")
     public  ResponseEntity<ResponseObject>  getByTaskName(@RequestParam String name){
         List<Todo> todos = todoService.findTodoByTaskName(name);
